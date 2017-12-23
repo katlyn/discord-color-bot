@@ -9,11 +9,9 @@ bot.on('messageCreate', msg => {
   if (msg.content.startsWith(`<@${bot.user.id}> `)) {
     msg.content = msg.content.slice(`<@${bot.user.id}> `.length).trim()
     if (msg.content.startsWith('color')) {
-      console.log(msg.member.roles)
       let colorRole = null
       msg.member.roles.forEach(role => {
-        console.log(msg.channel.guild.roles.get(role).name)
-        if (msg.channel.guild.roles.get(role).name.startsWith('Paint Color ')) {
+        if (msg.channel.guild.roles.get(role).name.startsWith('Paint Color ') || msg.channel.guild.roles.get(role).name.includes('🎨')) {
           colorRole = msg.channel.guild.roles.get(role)
         }
       })
@@ -26,7 +24,6 @@ bot.on('messageCreate', msg => {
     if (msg.content.startsWith('paint ')) {
       msg.content = msg.content.slice(6)
       let parsed = parser(msg.content)
-      console.log(parsed)
       let color = null
       if (parsed.hex) {
         parsed.hex = parsed.hex + ''
@@ -39,11 +36,8 @@ bot.on('messageCreate', msg => {
           bot.createMessage(msg.channel.id, 'Sorry, I don\'t have that paint color')
           return
         }
-        console.log(someNamedColor)
         color = someNamedColor.hex.replace(/^(#)/, '')
-        console.log(parsed.name + ' ' + someNamedColor.hex)
       }
-      console.log(color)
       if (color === null) {
         return
       }
@@ -51,14 +45,13 @@ bot.on('messageCreate', msg => {
         .then(startedMessage => {
           let colorRole = null
           msg.member.roles.forEach(role => {
-            console.log(msg.channel.guild.roles.get(role).name)
-            if (msg.channel.guild.roles.get(role).name.startsWith('Paint Color ')) {
+            if (msg.channel.guild.roles.get(role).name.startsWith('Paint Color ') || msg.channel.guild.roles.get(role).name.includes('🎨')) {
               colorRole = msg.channel.guild.roles.get(role)
             }
           })
           if (colorRole === null) {
             msg.channel.guild.createRole({
-              name: `Paint Color #${color}`,
+              name: `🎨 #${color}`,
               color: parseInt(color, 16)
             }, 'Let\'s paint a happy little cloud.')
               .then(role => {
@@ -68,12 +61,18 @@ bot.on('messageCreate', msg => {
             return
           }
           color = color + ''
-          console.log(parseInt(color, 16))
           colorRole.edit({
-            name: `Paint Color #${color}`,
             color: parseInt(color, 16)
           }, 'Let\'s paint a happy little cloud.')
-            .then(() => {
+            .then(editedRole => {
+              if (editedRole.name.startsWith('Paint Color')) {
+                editedRole.edit({
+                  name: `🎨 #${color}`
+                })
+                  .then(() => {
+                    bot.createMessage(msg.channel.id, 'Hey!, Just so you know, roles only need to have `🎨` in their name to work now. I\'ve gone ahead and renamed this one for you.')
+                  })
+              }
               startedMessage.edit('What a happy little color.')
             })
         })
