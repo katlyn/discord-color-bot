@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "color-name-list": "^3.9.0",
-    "eris": "^0.8.2"
+    "eris": "^0.8.2",
+    "yargs-parser": "^8.1.0"
   },
   "devDependencies": {
     "eslint": "^4.13.1",
