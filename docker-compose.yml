@@ -5,5 +5,4 @@ services:
     command: node dist/index.js
     restart: always
     environment:
-      - TOKEN=MzkzODUwOTU5ODQwOTM1OTQ2.D0emRQ.OQMX0131L4ALiLWhZYa0qnIAy2A
-
+      - TOKEN=haha yes
