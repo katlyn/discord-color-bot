@@ -132,7 +132,7 @@ export class InteractionHandler {
 
     // Set API endpoints
     if (this.opts.development) {
-      console.log('InteractionHandler: development enabled')
+      console.debug('InteractionHandler: development enabled. Will add commands to development guild.')
       if (this.opts.developmentGuild === undefined) {
         throw new Error('Development guild ID not provided. Cannot add commands.')
       }
@@ -159,7 +159,6 @@ export class InteractionHandler {
     for (const [, { schema }] of this.commands) {
       commands.push(schema)
     }
-    console.log(commands.map(c => c.name))
     const req = await this._request('PUT', this.commandEndpoint, commands)
     if (!req.ok) {
       throw new Error(`Unable to register commands ${req.status} ${JSON.stringify(await req.json(), null, 2)}`)
@@ -171,7 +170,6 @@ export class InteractionHandler {
     handler: InteractionCallback,
     opts: InteractionCallbackOptions = {}
   ): this {
-    console.log(command.name, 'registered')
     this.commands.set(command.name, { schema: command, handler, opts })
     return this
   }
@@ -235,7 +233,6 @@ export class InteractionHandler {
   }
 
   async _request (method: string, path: string, body: unknown): Promise<Response> {
-    console.log(method, path)
     return await fetch('https://discordapp.com/api/v8' + path, {
       method,
       body: body === undefined ? undefined : JSON.stringify(body),
