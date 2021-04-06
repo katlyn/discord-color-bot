@@ -1,8 +1,0 @@
-version: '2'
-services:
-  bot:
-    build: .
-    command: node dist/index.js
-    restart: always
-    environment:
-      - TOKEN=
