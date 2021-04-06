@@ -1,7 +1,7 @@
 // Much of this is taken from https://github.com/theGordHoard/hoardbot/blob/master/src/commands/util/color.ts
 // Used with permission from myself because i'm the author
 
-import { getColor, hexToRgb } from '../util'
+import { getColor } from '../util'
 import { ApplicationCommandType, InteractionHandler } from '../slashHandler'
 
 const init = (handler: InteractionHandler): void => {
