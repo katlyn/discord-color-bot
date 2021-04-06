@@ -1,19 +1,14 @@
-FROM node:10-alpine
+FROM node:14-alpine
+WORKDIR /usr/build
+COPY tsconfig.json package.json package-lock.json /usr/build/
+RUN npm ci
+COPY ./src /usr/build/src/
+RUN npm run build
 
-RUN apk add git
+FROM node:14-alpine
+WORKDIR /usr/bot
+COPY package.json package-lock.json /usr/bot/
+RUN npm ci --production
+COPY --from=0 /usr/build/dist /usr/bot/dist
 
-RUN mkdir /usr/web
-WORKDIR /usr/web
-
-COPY package.json /usr/web
-COPY yarn.lock /usr/web
-
-RUN yarn
-
-COPY ./src /usr/web/src
-COPY ./tsconfig.json /usr/web
-
-RUN yarn build
-
-CMD [node, dist/index.js]
-
+CMD [ "node", "/usr/bot/dist/index.js" ]

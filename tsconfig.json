@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
-      "module":  "commonjs",
-      "lib": [
-        "es2016"
-      ],
-      "target": "es6",
-      "outDir": "./dist",
-      "sourceMap": true
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "lib": [
+      "es2020"
+    ]
   },
   "include": [
-    "./src"
+    "src/**/*"
   ]
 }
