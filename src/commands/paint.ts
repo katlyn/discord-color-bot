@@ -8,7 +8,8 @@ const init = (handler: InteractionHandler): void => {
     options: [{
       name: 'color',
       description: 'What color would you like?',
-      type: ApplicationCommandType.STRING
+      type: ApplicationCommandType.STRING,
+      required: true
     }]
   }, async (slash, client) => {
     const colorQuery = slash.data.options[0].value as string
