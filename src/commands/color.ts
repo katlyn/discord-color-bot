@@ -1,32 +1,8 @@
 // Much of this is taken from https://github.com/theGordHoard/hoardbot/blob/master/src/commands/util/color.ts
 // Used with permission from myself because i'm the author
 
-import { ExtendedColor, getColor } from '../util'
+import { generateEmbed, getColor } from '../util'
 import { ApplicationCommandType, InteractionHandler } from '../slashHandler'
-
-const generateEmbed = (color: ExtendedColor) => {
-
-
-  const red = (color.rgb.r / 255 * 100).toFixed(2)
-  const blue = (color.rgb.b / 255 * 100).toFixed(2)
-  const green = (color.rgb.g / 255 * 100).toFixed(2)
-
-  return {
-    embeds: [{
-      type: 'rich',
-      color: color.decimal,
-      description: `${color.name} (\`${color.hex}\`) is comprised of ${red}% red, ${green}% green, and ${blue}% blue.`,
-      image: {
-        url: color.image
-      },
-      footer: {
-        text: color.distance === 0
-          ? `${color.name} is an exact match for this color.`
-          : `${color.name} is an approximation for this color, with an error of ${color.distance.toFixed(2)}.`
-      }
-    }]
-  }
-}
 
 const init = (handler: InteractionHandler): void => {
   handler.registerSlash({
@@ -52,7 +28,9 @@ const init = (handler: InteractionHandler): void => {
         }
       } else {
         const color = getColor(role.color.toString(16))
-        return generateEmbed(color)
+        return {
+          embeds: [generateEmbed(color)]
+        }
       }
     }
 
@@ -63,7 +41,9 @@ const init = (handler: InteractionHandler): void => {
       }
     }
 
-    return generateEmbed(color)
+    return {
+      embeds: [generateEmbed(color)]
+    }
   })
 }
 

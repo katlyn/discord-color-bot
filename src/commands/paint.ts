@@ -1,4 +1,4 @@
-import { getColor, getHighestRole } from '../util'
+import { generateEmbed, getColor, getHighestRole } from '../util'
 import { ApplicationCommandType, InteractionHandler } from '../slashHandler'
 
 const init = (handler: InteractionHandler): void => {
@@ -59,7 +59,8 @@ const init = (handler: InteractionHandler): void => {
     }
 
     return {
-      content: `Painted your name with a touch of ${color.name} - ${color.hex}. What a happy little color.`
+      content: `Painted your name with a touch of ${color.name} - ${color.hex}. What a happy little color.`,
+      embeds: [generateEmbed(color)]
     }
   })
 }

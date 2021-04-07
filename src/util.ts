@@ -5,7 +5,7 @@ import difflib from 'difflib'
 import namedColors from 'color-name-list'
 import nearestColor, { ColorMatch } from 'nearest-color'
 import { URL } from 'url'
-import { Member, Role } from 'eris'
+import { Embed, Member, Role } from 'eris'
 
 const colorMap = namedColors.reduce((o, { name, hex }) => Object.assign(o, { [name]: hex }), {})
 const colorNames = Object.keys(colorMap)
@@ -92,6 +92,26 @@ export const getColor = (query: string): ExtendedColor | null => {
       rgb: hexToRgb(named.hex),
       image: generateColorUrl(named.name, named.hex),
       decimal: parseInt(named.hex.substr(1), 16)
+    }
+  }
+}
+
+export const generateEmbed = (color: ExtendedColor): Embed => {
+  const red = (color.rgb.r / 255 * 100).toFixed(2)
+  const blue = (color.rgb.b / 255 * 100).toFixed(2)
+  const green = (color.rgb.g / 255 * 100).toFixed(2)
+
+  return {
+    type: 'rich',
+    color: color.decimal,
+    description: `${color.name} (\`${color.hex}\`) is comprised of ${red}% red, ${green}% green, and ${blue}% blue.`,
+    image: {
+      url: color.image
+    },
+    footer: {
+      text: color.distance === 0
+        ? `${color.name} is an exact match for this color.`
+        : `${color.name} is an approximation for this color, with an error of ${color.distance.toFixed(2)}.`
     }
   }
 }
