@@ -18,7 +18,7 @@
     "difflib": "^0.2.4",
     "eris": "^0.15.0",
     "nearest-color": "^0.4.4",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
