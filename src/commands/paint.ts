@@ -1,4 +1,4 @@
-import { generateEmbed, getColor, getHighestRole } from '../util'
+import { autocompleteColor, generateEmbed, getColor, getHighestRole } from '../util'
 import { ApplicationCommandType, InteractionHandler } from '../slashHandler'
 
 const init = (handler: InteractionHandler): void => {
@@ -9,7 +9,8 @@ const init = (handler: InteractionHandler): void => {
       name: 'color',
       description: 'What color would you like?',
       type: ApplicationCommandType.STRING,
-      required: true
+      required: true,
+      autocomplete: true
     }]
   }, async (slash, client) => {
     const colorQuery = slash.data.options[0].value as string
@@ -61,6 +62,15 @@ const init = (handler: InteractionHandler): void => {
     return {
       content: `Painted your name with a touch of ${color.name} - ${color.hex}. What a happy little color.`,
       embeds: [generateEmbed(color)]
+    }
+  }, {
+    autocomplete (interaction) {
+      const input = interaction.data.options[0]
+      const options = autocompleteColor(input.value as string)
+      return options.map(v => ({
+        name: v,
+        value: v
+      }))
     }
   })
 }

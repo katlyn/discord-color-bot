@@ -1,5 +1,4 @@
 import { Client, Embed, Guild, Member, TextableChannel, User } from 'eris'
-import fetch, { Response } from 'node-fetch'
 
 // API request types
 
@@ -18,6 +17,7 @@ export interface ApplicationCommandOption {
   required?: boolean
   choices?: ApplicationCommandOptionChoice[]
   options?: ApplicationCommandOption[]
+  autocomplete?: boolean
 }
 
 export enum ApplicationCommandType {
@@ -48,7 +48,11 @@ enum InteractionResponseType {
   // Deprecated
   channelMessage,
   channelMessageWithSource,
-  deferredChannelMessageWithSource
+  deferredChannelMessageWithSource,
+  deferredUpdateMessage,
+  updateMessage,
+  autocompleteResult,
+  modal
 }
 
 export interface InteractionApplicationCommandCallbackData {
@@ -83,7 +87,8 @@ export interface Interaction {
 
 enum InteractionType {
   ping = 1,
-  applicationCommand
+  applicationCommand,
+  autocomplete = 4
 }
 
 export interface InteractionData {
@@ -111,9 +116,15 @@ interface InteractionCallbackOptions {
   defer?: boolean
   // Can only the request user see it?
   ephemeral?: boolean
+  // The funtion to autocomplete arguments with
+  autocomplete?: (_: Interaction) => ApplicationCommandOptionChoice[]
 }
 
 type InteractionCallback = (d: Interaction, c: Client) => InteractionApplicationCommandCallbackData | Promise<InteractionApplicationCommandCallbackData>
+
+export function isInteractionPayload (ev: { t: string }): ev is { t: string, d: Interaction } {
+  return ev.t === 'INTERACTION_CREATE'
+}
 
 /**
  * A very simple wrapper for Discord's interactions. Doesn't do much schema
@@ -174,12 +185,37 @@ export class InteractionHandler {
     return this
   }
 
-  async _websocketHandler (ev: { t: string, d: unknown }): Promise<void> {
-    if (ev.t !== 'INTERACTION_CREATE') {
+  async _websocketHandler (ev: { t: string }): Promise<void> {
+    if (!isInteractionPayload(ev)) {
       return
     }
 
-    const slash = ev.d as Interaction
+    switch (ev.d.type) {
+      case InteractionType.applicationCommand: {
+        await this.dispatchSlash(ev.d)
+        break
+      }
+      case InteractionType.autocomplete: {
+        await this.dispatchAutocomplete(ev.d)
+        break
+      }
+    }
+  }
+
+  async dispatchAutocomplete (interaction: Interaction): Promise<void> {
+    const { opts } = this.commands.get(interaction.data.name)
+    const choices = await opts.autocomplete?.(interaction) ?? []
+    await this._request(
+      'POST',
+      `/interactions/${interaction.id}/${interaction.token}/callback`,
+      {
+        type: InteractionResponseType.autocompleteResult,
+        data: { choices }
+      }
+    )
+  }
+
+  async dispatchSlash (slash: Interaction): Promise<void> {
     slash.user = this.client.users.get(slash.user?.id ?? slash.member.user.id)
     slash.guild = this.client.guilds.get(slash.guild_id)
     slash.channel = slash.guild?.channels?.get(slash.channel_id) as TextableChannel ?? await this.client.getDMChannel(slash.channel_id)

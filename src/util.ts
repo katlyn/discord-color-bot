@@ -54,6 +54,18 @@ export interface ExtendedColor {
   decimal: number
 }
 
+export const autocompleteColor = (query: string): string[] => {
+  const lower = query.toLowerCase()
+  const hexMatches = lower.match(hexTest)
+  if (hexMatches !== null) {
+    return [query]
+  }
+  return [
+    ...difflib.getCloseMatches(lower, colorNames),
+    ...namedColors.filter(c => c.name.toLowerCase().includes(query)).map(c => c.name)
+  ].slice(0, 25)
+}
+
 export const getColor = (query: string): ExtendedColor | null => {
   query = query.toLowerCase()
 

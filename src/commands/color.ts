@@ -1,7 +1,7 @@
 // Much of this is taken from https://github.com/theGordHoard/hoardbot/blob/master/src/commands/util/color.ts
 // Used with permission from myself because i'm the author
 
-import { generateEmbed, getColor } from '../util'
+import { autocompleteColor, generateEmbed, getColor } from '../util'
 import { ApplicationCommandType, InteractionHandler } from '../slashHandler'
 
 const init = (handler: InteractionHandler): void => {
@@ -12,7 +12,8 @@ const init = (handler: InteractionHandler): void => {
       name: 'color',
       description: 'What color would you like to see?',
       type: ApplicationCommandType.STRING,
-      required: false
+      required: false,
+      autocomplete: true
     }]
   }, async (slash) => {
     const colorQuery = slash.data.options?.[0]?.value as string
@@ -43,6 +44,15 @@ const init = (handler: InteractionHandler): void => {
 
     return {
       embeds: [generateEmbed(color)]
+    }
+  }, {
+    autocomplete (interaction) {
+      const input = interaction.data.options[0]
+      const options = autocompleteColor(input.value as string)
+      return options.map(v => ({
+        name: v,
+        value: v
+      }))
     }
   })
 }
