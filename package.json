@@ -14,21 +14,21 @@
   },
   "main": "dist/index.js",
   "dependencies": {
-    "color-name-list": "^9.21.0",
+    "color-name-list": "^10.7.0",
     "difflib": "^0.2.4",
-    "eris": "^0.17.1",
+    "eris": "^0.17.2",
     "nearest-color": "^0.4.4",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
-    "@types/node": "^18.7.23",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "eslint": "^8.24.0",
-    "eslint-config-standard-with-typescript": "^23.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.3.0",
-    "eslint-plugin-promise": "^6.0.1",
-    "typescript": "^4.8.4"
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "eslint": "^8.37.0",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "typescript": "^5.0.3"
   },
   "scripts": {
     "build": "tsc"
