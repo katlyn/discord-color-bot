@@ -41,7 +41,8 @@ const init = (handler: InteractionHandler): void => {
       // Create the new role directly under the bot's highest role
       const createdRole = await slash.guild.createRole({
         name: `🎨 ${color.name}`,
-        color: color.decimal
+        color: color.decimal,
+        permissions: 0
       })
       await createdRole.editPosition(rolePosition)
       await slash.member.addRole(createdRole.id)
